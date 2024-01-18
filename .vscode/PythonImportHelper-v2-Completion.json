@@ -1,0 +1,113 @@
+[
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "glob",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "glob",
+        "description": "glob",
+        "detail": "glob",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "supersuit",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "supersuit",
+        "description": "supersuit",
+        "detail": "supersuit",
+        "documentation": {}
+    },
+    {
+        "label": "PPO",
+        "importPath": "stable_baselines3",
+        "description": "stable_baselines3",
+        "isExtraImport": true,
+        "detail": "stable_baselines3",
+        "documentation": {}
+    },
+    {
+        "label": "DQN",
+        "importPath": "stable_baselines3",
+        "description": "stable_baselines3",
+        "isExtraImport": true,
+        "detail": "stable_baselines3",
+        "documentation": {}
+    },
+    {
+        "label": "MlpPolicy",
+        "importPath": "stable_baselines3.ppo",
+        "description": "stable_baselines3.ppo",
+        "isExtraImport": true,
+        "detail": "stable_baselines3.ppo",
+        "documentation": {}
+    },
+    {
+        "label": "multiwalker_v9",
+        "importPath": "pettingzoo.sisl",
+        "description": "pettingzoo.sisl",
+        "isExtraImport": true,
+        "detail": "pettingzoo.sisl",
+        "documentation": {}
+    },
+    {
+        "label": "multiwalker_v9",
+        "importPath": "pettingzoo.sisl",
+        "description": "pettingzoo.sisl",
+        "isExtraImport": true,
+        "detail": "pettingzoo.sisl",
+        "documentation": {}
+    },
+    {
+        "label": "train_butterfly_supersuit",
+        "kind": 2,
+        "importPath": "PPO",
+        "description": "PPO",
+        "peekOfCode": "def train_butterfly_supersuit(\n    env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs\n):\n    # Train a single model to play as each agent in a cooperative Parallel environment\n    env = env_fn.parallel_env(**env_kwargs)\n    env.reset(seed=seed)\n    print(f\"Starting training on {str(env.metadata['name'])}.\")\n    env = ss.frame_stack_v1(env, 4)\n    env = ss.pettingzoo_env_to_vec_env_v1(env)\n    env = ss.concat_vec_envs_v1(env, 8, num_cpus=2, base_class=\"stable_baselines3\")",
+        "detail": "PPO",
+        "documentation": {}
+    },
+    {
+        "label": "eval",
+        "kind": 2,
+        "importPath": "PPO",
+        "description": "PPO",
+        "peekOfCode": "def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):\n    # Evaluate a trained agent vs a random agent\n    env = env_fn.env(render_mode=render_mode, **env_kwargs)\n    env = ss.frame_stack_v1(env, 4)\n    print(\n        f\"\\nStarting evaluation on {str(env.metadata['name'])} (num_games={num_games}, render_mode={render_mode})\"\n    )\n    try:\n        latest_policy = max(\n            glob.glob(f\"{env.metadata['name']}*.zip\"), key=os.path.getctime",
+        "detail": "PPO",
+        "documentation": {}
+    },
+    {
+        "label": "env",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "env = multiwalker_v9.env(render_mode=\"human\")\nenv.reset(seed=42)\nfor agent in env.agent_iter():\n    observation, reward, termination, truncation, info = env.last()\n    if termination or truncation:\n        action = None\n    else:\n        # this is where you would insert your policy\n        action = env.action_space(agent).sample()\n    env.step(action)",
+        "detail": "main",
+        "documentation": {}
+    }
+]
