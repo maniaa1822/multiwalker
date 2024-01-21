@@ -15,29 +15,47 @@ from stable_baselines3 import PPO, DQN
 from stable_baselines3.ppo import MlpPolicy
 
 from pettingzoo.sisl import multiwalker_v9
+from stable_baselines3.common.callbacks import EvalCallback,StopTrainingOnNoModelImprovement
 
+
+logdir = "logs"
 
 def train_butterfly_supersuit(
     env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs
 ):
     # Train a single model to play as each agent in a cooperative Parallel environment
-    env = env_fn.parallel_env(**env_kwargs)
+    env = env_fn.parallel_env(**env_kwargs, n_walkers = 2)
 
     env.reset(seed=seed)
 
     print(f"Starting training on {str(env.metadata['name'])}.")
     
-    env = ss.frame_stack_v1(env, 4)
+    env = ss.frame_stack_v1(env, 3)
     env = ss.pettingzoo_env_to_vec_env_v1(env)
     env = ss.concat_vec_envs_v1(env, 8, num_cpus=2, base_class="stable_baselines3")
+    
 
-    # Note: Waterworld's observation space is discrete (242,) so we use an MLP policy rather than CNN
+    stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=1,
+                                                           min_evals=5,
+                                                           verbose=1)
+    eval_callback = EvalCallback(env, eval_freq=1000,
+                                 callback_after_eval=stop_train_callback,
+                                 verbose=1)
+
     model = PPO(
         MlpPolicy,
         env,
-        verbose=3,
-        learning_rate=1e-3,
+        verbose=1,
+        learning_rate=2.5e-4,
         batch_size=256,
+        normalize_advantage=True,
+        n_steps=2048,
+        n_epochs=10,
+        gae_lambda=0.95,
+        gamma=0.99,
+        clip_range=0.2,
+        ent_coef=0.001,
+        tensorboard_log=logdir,
     )
     
 
@@ -54,8 +72,11 @@ def train_butterfly_supersuit(
 
 def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):
     # Evaluate a trained agent vs a random agent
-    env = env_fn.env(render_mode=render_mode, **env_kwargs)
-    env = ss.frame_stack_v1(env, 4)
+    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 2)
+    
+    # Apply the same frame stacking to the evaluation environment
+    env = ss.frame_stack_v1(env, 3)
+    
 
     print(
         f"\nStarting evaluation on {str(env.metadata['name'])} (num_games={num_games}, render_mode={render_mode})"
@@ -103,10 +124,10 @@ if __name__ == "__main__":
     env_kwargs = {}
 
     # Train a model (takes ~3 minutes on GPU)
-    train_butterfly_supersuit(env_fn, steps=196_608, seed=0, **env_kwargs)
+    #train_butterfly_supersuit(env_fn, steps=10_000_000, seed=0, **env_kwargs)
 
     # Evaluate 10 games (average reward should be positive but can vary significantly)
-    eval(env_fn, num_games=10, render_mode=None, **env_kwargs)
+    #eval(env_fn, num_games=10, render_mode=None, **env_kwargs)
 
     # Watch 2 games
     eval(env_fn, num_games=2, render_mode="human", **env_kwargs)
