@@ -1,9 +1,4 @@
-"""Uses Stable-Baselines3 to train agents to play the Waterworld environment using SuperSuit vector envs.
 
-For more information, see https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html
-
-Author: Elliot (https://github.com/elliottower)
-"""
 from __future__ import annotations
 
 import glob
@@ -95,7 +90,7 @@ def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwa
     rewards = {agent: 0 for agent in env.possible_agents}
 
     # Note: We train using the Parallel API but evaluate using the AEC API
-    # SB3 models are designed for single-agent settings, we get around this by using he same model for every agent
+    # SB3 models are designed for single-agent settings, we get around this by using the same model for every agent
     for i in range(num_games):
         env.reset(seed=i)   
 

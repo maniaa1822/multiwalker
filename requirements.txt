@@ -1,3 +1,4 @@
 pettingzoo[sisl]
 stable_baselines3[mpi]
 supersuit
+optuna
