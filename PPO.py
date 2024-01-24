@@ -10,7 +10,7 @@ from stable_baselines3 import PPO, DQN
 from stable_baselines3.ppo import MlpPolicy
 
 from pettingzoo.sisl import multiwalker_v9
-from stable_baselines3.common.callbacks import EvalCallback,StopTrainingOnNoModelImprovement
+from stable_baselines3.common.callbacks import EvalCallback,StopTrainingOnNoModelImprovement,CheckpointCallback
 
 
 logdir = "logs"
@@ -30,12 +30,9 @@ def train_butterfly_supersuit(
     env = ss.concat_vec_envs_v1(env, 8, num_cpus=2, base_class="stable_baselines3")
     
 
-    stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=1,
-                                                           min_evals=5,
-                                                           verbose=1)
-    eval_callback = EvalCallback(env, eval_freq=1000,
-                                 callback_after_eval=stop_train_callback,
-                                 verbose=1)
+    #checlpoint callback
+    checkpoint_callback = CheckpointCallback(save_freq=1_000_000, save_path='./chekpoint_models/',
+                                         name_prefix=f"{env.unwrapped.metadata.get('name')}_{time.strftime('%Y%m%d-%H%M%S')}")
 
     model = PPO(
         MlpPolicy,
@@ -53,14 +50,16 @@ def train_butterfly_supersuit(
         tensorboard_log=logdir,
     )
     
+    model.load("chekpoint_models/multiwalker_v9_20240124-114702_32000_steps.zip")
 
-    model.learn(total_timesteps=steps)
+    model.learn(total_timesteps=steps, callback=checkpoint_callback)
 
     model.save(f"{env.unwrapped.metadata.get('name')}_{time.strftime('%Y%m%d-%H%M%S')}")
 
     print("Model has been saved.")
 
     print(f"Finished training on {str(env.unwrapped.metadata['name'])}.")
+    
 
     env.close()
 
@@ -119,10 +118,10 @@ if __name__ == "__main__":
     env_kwargs = {}
 
     # Train a model (takes ~3 minutes on GPU)
-    #train_butterfly_supersuit(env_fn, steps=10_000_000, seed=0, **env_kwargs)
+    train_butterfly_supersuit(env_fn, steps=50_000_000, seed=0, **env_kwargs)
 
     # Evaluate 10 games (average reward should be positive but can vary significantly)
     #eval(env_fn, num_games=10, render_mode=None, **env_kwargs)
 
     # Watch 2 games
-    eval(env_fn, num_games=2, render_mode="human", **env_kwargs)
+    #eval(env_fn, num_games=2, render_mode="human", **env_kwargs)
