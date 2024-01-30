@@ -38,14 +38,14 @@ PACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]
 
 PACKAGE_LENGTH = 240
 
-VIEWPORT_W = 1920
-VIEWPORT_H = 720
+VIEWPORT_W = 600
+VIEWPORT_H = 400
 
 TERRAIN_STEP = 14 / SCALE
 TERRAIN_LENGTH = 200  # in steps
 TERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4
 TERRAIN_GRASS = 10  # low long are grass spots, in steps
-TERRAIN_STARTPAD = 20  # in steps
+TERRAIN_STARTPAD = 30  # in steps
 FRICTION = 2.5
 
 WALKER_SEPERATION = 10  # in steps
@@ -289,7 +289,7 @@ class BipedalWalker(Agent):
 class MultiWalkerEnv:
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": FPS}
 
-    hardcore = False
+    hardcore = True
     
     # Set difficulty
     level = 1 # Easy -> 1 ; Medium -> 2, Hard -> 3 ;

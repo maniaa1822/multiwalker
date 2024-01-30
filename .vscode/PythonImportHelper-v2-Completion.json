@@ -3813,7 +3813,7 @@
         "kind": 2,
         "importPath": "PPO",
         "description": "PPO",
-        "peekOfCode": "def train_butterfly_supersuit(\n    env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs\n):\n    # Train a single model to play as each agent in a cooperative Parallel environment\n    env = env_fn.parallel_env(**env_kwargs, n_walkers = 2, terminate_on_fall = True, max_cycles = 500)\n    env.reset(seed=seed)\n    print(f\"Starting training on {str(env.metadata['name'])}.\")\n    #env = ss.black_death_v3(env)\n    env = ss.frame_stack_v1(env, 3)\n    env = ss.pettingzoo_env_to_vec_env_v1(env)",
+        "peekOfCode": "def train_butterfly_supersuit(\n    env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs\n):\n    # Train a single model to play as each agent in a cooperative Parallel environment\n    env = env_fn.parallel_env(**env_kwargs, n_walkers = 2)\n    env.reset(seed=seed)\n    print(f\"Starting training on {str(env.metadata['name'])}.\")\n    #env = ss.black_death_v3(env)\n    env = ss.frame_stack_v1(env, 3)\n    env = ss.pettingzoo_env_to_vec_env_v1(env)",
         "detail": "PPO",
         "documentation": {}
     },
@@ -3822,7 +3822,7 @@
         "kind": 2,
         "importPath": "PPO",
         "description": "PPO",
-        "peekOfCode": "def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):\n    # Evaluate a trained agent vs a random agent\n    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 2,terminate_on_fall = False, remove_on_fall = False)\n    # Apply the same frame stacking to the evaluation environment\n    env = ss.black_death_v3(env)\n    env = ss.frame_stack_v1(env, 3)\n    print(\n        f\"\\nStarting evaluation on {str(env.metadata['name'])} (num_games={num_games}, render_mode={render_mode})\"\n    )\n    try:",
+        "peekOfCode": "def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):\n    # Evaluate a trained agent vs a random agent\n    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 2)\n    # Apply the same frame stacking to the evaluation environment\n    env = ss.black_death_v3(env)\n    env = ss.frame_stack_v1(env, 3)\n    print(\n        f\"\\nStarting evaluation on {str(env.metadata['name'])} (num_games={num_games}, render_mode={render_mode})\"\n    )\n    try:",
         "detail": "PPO",
         "documentation": {}
     },
@@ -3849,7 +3849,7 @@
         "kind": 6,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "class MultiWalkerEnv:\n    metadata = {\"render_modes\": [\"human\", \"rgb_array\"], \"render_fps\": FPS}\n    hardcore = False\n    # Set difficulty\n    level = 1 # Easy -> 1 ; Medium -> 2, Hard -> 3 ;\n    def __init__(\n        self,\n        n_walkers=3,\n        position_noise=1e-3,\n        angle_noise=1e-3,",
+        "peekOfCode": "class MultiWalkerEnv:\n    metadata = {\"render_modes\": [\"human\", \"rgb_array\"], \"render_fps\": FPS}\n    hardcore = True\n    # Set difficulty\n    level = 1 # Easy -> 1 ; Medium -> 2, Hard -> 3 ;\n    def __init__(\n        self,\n        n_walkers=3,\n        position_noise=1e-3,\n        angle_noise=1e-3,",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3894,7 +3894,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "SPEED_HIP = 4\nSPEED_KNEE = 6\nLIDAR_RANGE = 160 / SCALE\nINITIAL_RANDOM = 5\nHULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 1920",
+        "peekOfCode": "SPEED_HIP = 4\nSPEED_KNEE = 6\nLIDAR_RANGE = 160 / SCALE\nINITIAL_RANDOM = 5\nHULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 600",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3903,7 +3903,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "SPEED_KNEE = 6\nLIDAR_RANGE = 160 / SCALE\nINITIAL_RANDOM = 5\nHULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 1920\nVIEWPORT_H = 720",
+        "peekOfCode": "SPEED_KNEE = 6\nLIDAR_RANGE = 160 / SCALE\nINITIAL_RANDOM = 5\nHULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 600\nVIEWPORT_H = 400",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3912,7 +3912,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "LIDAR_RANGE = 160 / SCALE\nINITIAL_RANDOM = 5\nHULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 1920\nVIEWPORT_H = 720\nTERRAIN_STEP = 14 / SCALE",
+        "peekOfCode": "LIDAR_RANGE = 160 / SCALE\nINITIAL_RANDOM = 5\nHULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 600\nVIEWPORT_H = 400\nTERRAIN_STEP = 14 / SCALE",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3921,7 +3921,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "INITIAL_RANDOM = 5\nHULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 1920\nVIEWPORT_H = 720\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps",
+        "peekOfCode": "INITIAL_RANDOM = 5\nHULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 600\nVIEWPORT_H = 400\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3930,7 +3930,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "HULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 1920\nVIEWPORT_H = 720\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4",
+        "peekOfCode": "HULL_POLY = [(-30, +9), (+6, +9), (+34, +1), (+34, -8), (-30, -8)]\nLEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 600\nVIEWPORT_H = 400\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3939,7 +3939,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "LEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 1920\nVIEWPORT_H = 720\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps",
+        "peekOfCode": "LEG_DOWN = -8 / SCALE\nLEG_W, LEG_H = 8 / SCALE, 34 / SCALE\nPACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 600\nVIEWPORT_H = 400\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3948,7 +3948,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "PACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 1920\nVIEWPORT_H = 720\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5",
+        "peekOfCode": "PACKAGE_POLY = [(-120, 5), (120, 5), (120, -5), (-120, -5)]\nPACKAGE_LENGTH = 240\nVIEWPORT_W = 600\nVIEWPORT_H = 400\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3957,7 +3957,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "PACKAGE_LENGTH = 240\nVIEWPORT_W = 1920\nVIEWPORT_H = 720\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps",
+        "peekOfCode": "PACKAGE_LENGTH = 240\nVIEWPORT_W = 600\nVIEWPORT_H = 400\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3966,7 +3966,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "VIEWPORT_W = 1920\nVIEWPORT_H = 720\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):",
+        "peekOfCode": "VIEWPORT_W = 600\nVIEWPORT_H = 400\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3975,7 +3975,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "VIEWPORT_H = 720\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):",
+        "peekOfCode": "VIEWPORT_H = 400\nTERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3984,7 +3984,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "TERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)",
+        "peekOfCode": "TERRAIN_STEP = 14 / SCALE\nTERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -3993,7 +3993,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "TERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)\n        self.env = env",
+        "peekOfCode": "TERRAIN_LENGTH = 200  # in steps\nTERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)\n        self.env = env",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -4002,7 +4002,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "TERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)\n        self.env = env\n    def BeginContact(self, contact):",
+        "peekOfCode": "TERRAIN_HEIGHT = VIEWPORT_H / SCALE / 4\nTERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)\n        self.env = env\n    def BeginContact(self, contact):",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -4011,7 +4011,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "TERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)\n        self.env = env\n    def BeginContact(self, contact):\n        # if walkers fall on ground",
+        "peekOfCode": "TERRAIN_GRASS = 10  # low long are grass spots, in steps\nTERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)\n        self.env = env\n    def BeginContact(self, contact):\n        # if walkers fall on ground",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },
@@ -4020,7 +4020,7 @@
         "kind": 5,
         "importPath": "multiwalker_base_curriculum",
         "description": "multiwalker_base_curriculum",
-        "peekOfCode": "TERRAIN_STARTPAD = 20  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)\n        self.env = env\n    def BeginContact(self, contact):\n        # if walkers fall on ground\n        for i, walker in enumerate(self.env.walkers):",
+        "peekOfCode": "TERRAIN_STARTPAD = 30  # in steps\nFRICTION = 2.5\nWALKER_SEPERATION = 10  # in steps\nclass ContactDetector(contactListener):\n    def __init__(self, env):\n        contactListener.__init__(self)\n        self.env = env\n    def BeginContact(self, contact):\n        # if walkers fall on ground\n        for i, walker in enumerate(self.env.walkers):",
         "detail": "multiwalker_base_curriculum",
         "documentation": {}
     },

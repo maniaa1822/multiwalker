@@ -20,7 +20,7 @@ def train_butterfly_supersuit(
     env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs
 ):
     # Train a single model to play as each agent in a cooperative Parallel environment
-    env = env_fn.parallel_env(**env_kwargs, n_walkers = 2, terminate_on_fall = True, max_cycles = 500)
+    env = env_fn.parallel_env(**env_kwargs, n_walkers = 2)
 
     env.reset(seed=seed)
 
@@ -42,20 +42,22 @@ def train_butterfly_supersuit(
         MlpPolicy,
         env,
         verbose=1,
-        learning_rate=0.00025,
-        batch_size=512,
-        normalize_advantage=True,
-        n_steps=4096,
-        n_epochs=30,
-        gae_lambda=0.95,
+        n_steps=2048,
+        batch_size=64,
+        n_epochs=10,
         gamma=0.99,
-        clip_range=0.3,
-        ent_coef=0.001,
+        gae_lambda=0.95,
+        clip_range=0.2,
+        ent_coef=0.0,
+        learning_rate=3e-4,
+        normalize_advantage=True,
         tensorboard_log="logs/level_0",
     )
     
-    #model.load("chekpoint_models/multiwalker_v9_20240124-114702_32000_steps.zip")
+    model.load("chekpoint_models/level_0/multiwalker_v9_20240127-161752_8000000_steps.zip")
 
+    model.set_env(env)
+    
     model.learn(total_timesteps=steps, callback=callback)
 
     model.save(f"{env.unwrapped.metadata.get('name')}_{time.strftime('%Y%m%d-%H%M%S')}")
@@ -70,7 +72,7 @@ def train_butterfly_supersuit(
 
 def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):
     # Evaluate a trained agent vs a random agent
-    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 2,terminate_on_fall = False, remove_on_fall = False)
+    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 2)
     
     # Apply the same frame stacking to the evaluation environment
     env = ss.black_death_v3(env)
@@ -89,8 +91,8 @@ def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwa
         print("Policy not found.")
         exit(0)
 
-    #model = PPO.load(latest_policy)
-    model = PPO.load("chekpoint_models/level_0/multiwalker_v9_20240127-132409_1000000_steps.zip")
+    #model = PPO.load(latest_policy)chekpoint_models/level_0/multiwalker_v9_20240127-161752_14000000_steps.zip
+    model = PPO.load("multiwalker_v9_20240129-160031.zip")
 
     rewards = {agent: 0 for agent in env.possible_agents}
 
@@ -124,7 +126,7 @@ if __name__ == "__main__":
     env_kwargs = {}
 
     # Train a model (takes ~3 minutes on GPU)
-    #train_butterfly_supersuit(env_fn, steps=15_000_000, seed=0, **env_kwargs)
+    #train_butterfly_supersuit(env_fn, steps=8_000_000, seed=0, **env_kwargs)
 
     # Evaluate 10 games (average reward should be positive but can vary significantly)
     #eval(env_fn, num_games=10, render_mode=None, **env_kwargs)
