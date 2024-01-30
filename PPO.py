@@ -4,55 +4,59 @@ from __future__ import annotations
 import glob
 import os
 import time
+import tensorboard
 
 import supersuit as ss
 from stable_baselines3 import PPO, DQN
 from stable_baselines3.ppo import MlpPolicy
 
 from pettingzoo.sisl import multiwalker_v9
-from stable_baselines3.common.callbacks import EvalCallback,StopTrainingOnNoModelImprovement,CheckpointCallback
+from stable_baselines3.common.callbacks import EvalCallback,CheckpointCallback,CallbackList
 
 
-logdir = "logs"
+
 
 def train_butterfly_supersuit(
     env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs
 ):
     # Train a single model to play as each agent in a cooperative Parallel environment
-    env = env_fn.parallel_env(**env_kwargs, n_walkers = 2)
+    env = env_fn.parallel_env(**env_kwargs, n_walkers = 2, terminate_on_fall = True, max_cycles = 500)
 
     env.reset(seed=seed)
 
     print(f"Starting training on {str(env.metadata['name'])}.")
-    
+    #env = ss.black_death_v3(env)
     env = ss.frame_stack_v1(env, 3)
     env = ss.pettingzoo_env_to_vec_env_v1(env)
     env = ss.concat_vec_envs_v1(env, 8, num_cpus=2, base_class="stable_baselines3")
     
 
     #checlpoint callback
-    checkpoint_callback = CheckpointCallback(save_freq=1_000_000, save_path='./chekpoint_models/',
-                                         name_prefix=f"{env.unwrapped.metadata.get('name')}_{time.strftime('%Y%m%d-%H%M%S')}")
+    checkpoint_callback = CheckpointCallback(save_freq=max(500000 //8,1 ), save_path='./chekpoint_models/level_0',
+                                         name_prefix=f"{env.unwrapped.metadata.get('name')}_{time.strftime('%Y%m%d-%H%M%S')}",
+                                         save_replay_buffer=True,save_vecnormalize=True)
+    eval_callback = EvalCallback(env)
+    callback = CallbackList([checkpoint_callback,eval_callback])
 
     model = PPO(
         MlpPolicy,
         env,
         verbose=1,
-        learning_rate=2.5e-4,
-        batch_size=256,
+        learning_rate=0.00025,
+        batch_size=512,
         normalize_advantage=True,
-        n_steps=2048,
-        n_epochs=10,
+        n_steps=4096,
+        n_epochs=30,
         gae_lambda=0.95,
         gamma=0.99,
-        clip_range=0.2,
+        clip_range=0.3,
         ent_coef=0.001,
-        tensorboard_log=logdir,
+        tensorboard_log="logs/level_0",
     )
     
-    model.load("chekpoint_models/multiwalker_v9_20240124-114702_32000_steps.zip")
+    #model.load("chekpoint_models/multiwalker_v9_20240124-114702_32000_steps.zip")
 
-    model.learn(total_timesteps=steps, callback=checkpoint_callback)
+    model.learn(total_timesteps=steps, callback=callback)
 
     model.save(f"{env.unwrapped.metadata.get('name')}_{time.strftime('%Y%m%d-%H%M%S')}")
 
@@ -66,11 +70,12 @@ def train_butterfly_supersuit(
 
 def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):
     # Evaluate a trained agent vs a random agent
-    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 2)
+    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 2,terminate_on_fall = False, remove_on_fall = False)
     
     # Apply the same frame stacking to the evaluation environment
+    env = ss.black_death_v3(env)
     env = ss.frame_stack_v1(env, 3)
-    
+
 
     print(
         f"\nStarting evaluation on {str(env.metadata['name'])} (num_games={num_games}, render_mode={render_mode})"
@@ -84,7 +89,8 @@ def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwa
         print("Policy not found.")
         exit(0)
 
-    model = PPO.load(latest_policy)
+    #model = PPO.load(latest_policy)
+    model = PPO.load("chekpoint_models/level_0/multiwalker_v9_20240127-132409_1000000_steps.zip")
 
     rewards = {agent: 0 for agent in env.possible_agents}
 
@@ -118,10 +124,10 @@ if __name__ == "__main__":
     env_kwargs = {}
 
     # Train a model (takes ~3 minutes on GPU)
-    train_butterfly_supersuit(env_fn, steps=50_000_000, seed=0, **env_kwargs)
+    #train_butterfly_supersuit(env_fn, steps=15_000_000, seed=0, **env_kwargs)
 
     # Evaluate 10 games (average reward should be positive but can vary significantly)
     #eval(env_fn, num_games=10, render_mode=None, **env_kwargs)
 
     # Watch 2 games
-    #eval(env_fn, num_games=2, render_mode="human", **env_kwargs)
+    eval(env_fn, num_games=3, render_mode="human", **env_kwargs)
