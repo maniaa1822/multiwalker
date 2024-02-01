@@ -13,7 +13,7 @@ from stable_baselines3.ppo import MlpPolicy
 from pettingzoo.sisl import multiwalker_v9
 from stable_baselines3.common.callbacks import EvalCallback,CheckpointCallback,CallbackList
 
-
+from stable_baselines3.common.vec_env import VecVideoRecorder
 
 
 def train_butterfly_supersuit(
@@ -72,6 +72,8 @@ def train_butterfly_supersuit(
 
 def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):
     # Evaluate a trained agent vs a random agent
+    
+    
     env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 3)
     
     # Apply the same frame stacking to the evaluation environment
@@ -92,13 +94,15 @@ def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwa
         exit(0)
 
     #model = PPO.load(latest_policy)chekpoint_models/level_0/multiwalker_v9_20240127-161752_14000000_steps.zip
-    model = PPO.load("chekpoint_models/level_0_2w_to_3w/multiwalker_v9_20240201-105646_7500000_steps.zip")
+    model = PPO.load("/home/matteo/projects/RL/RL-Projects/multiwalker/chekpoint_models/level_0_2w_to_3w/multiwalker_v9_20240201-105646_7500000_steps.zip")
 
     rewards = {agent: 0 for agent in env.possible_agents}
 
     # Note: We train using the Parallel API but evaluate using the AEC API
     # SB3 models are designed for single-agent settings, we get around this by using the same model for every agent
     for i in range(num_games):
+                   
+        
         env.reset(seed=i)   
 
         for agent in env.agent_iter():

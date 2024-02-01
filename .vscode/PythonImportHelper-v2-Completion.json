@@ -417,6 +417,14 @@
         "documentation": {}
     },
     {
+        "label": "VecVideoRecorder",
+        "importPath": "stable_baselines3.common.vec_env",
+        "description": "stable_baselines3.common.vec_env",
+        "isExtraImport": true,
+        "detail": "stable_baselines3.common.vec_env",
+        "documentation": {}
+    },
+    {
         "label": "copy",
         "kind": 6,
         "isExtraImport": true,
