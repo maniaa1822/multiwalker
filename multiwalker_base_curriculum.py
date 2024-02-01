@@ -289,7 +289,7 @@ class BipedalWalker(Agent):
 class MultiWalkerEnv:
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": FPS}
 
-    hardcore = True
+    hardcore = False
     
     # Set difficulty
     level = 1 # Easy -> 1 ; Medium -> 2, Hard -> 3 ;

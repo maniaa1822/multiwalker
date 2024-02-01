@@ -20,7 +20,7 @@ def train_butterfly_supersuit(
     env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs
 ):
     # Train a single model to play as each agent in a cooperative Parallel environment
-    env = env_fn.parallel_env(**env_kwargs, n_walkers = 2)
+    env = env_fn.parallel_env(**env_kwargs, n_walkers = 3)
 
     env.reset(seed=seed)
 
@@ -32,7 +32,7 @@ def train_butterfly_supersuit(
     
 
     #checlpoint callback
-    checkpoint_callback = CheckpointCallback(save_freq=max(500000 //8,1 ), save_path='./chekpoint_models/level_0',
+    checkpoint_callback = CheckpointCallback(save_freq=max(500000 //8,1 ), save_path='./chekpoint_models/level_0_2w_to_3w',
                                          name_prefix=f"{env.unwrapped.metadata.get('name')}_{time.strftime('%Y%m%d-%H%M%S')}",
                                          save_replay_buffer=True,save_vecnormalize=True)
     eval_callback = EvalCallback(env)
@@ -51,10 +51,10 @@ def train_butterfly_supersuit(
         ent_coef=0.0,
         learning_rate=3e-4,
         normalize_advantage=True,
-        tensorboard_log="logs/level_0",
+        tensorboard_log="logs/level_0_2w_to_3w",
     )
     
-    model.load("chekpoint_models/level_0/multiwalker_v9_20240127-161752_8000000_steps.zip")
+    model.load("chekpoint_models/level_0_noFW/multiwalker_v9_20240127-161752_8000000_steps.zip")
 
     model.set_env(env)
     
@@ -72,7 +72,7 @@ def train_butterfly_supersuit(
 
 def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):
     # Evaluate a trained agent vs a random agent
-    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 2)
+    env = env_fn.env(render_mode=render_mode, **env_kwargs, n_walkers = 3)
     
     # Apply the same frame stacking to the evaluation environment
     env = ss.black_death_v3(env)
@@ -92,7 +92,7 @@ def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwa
         exit(0)
 
     #model = PPO.load(latest_policy)chekpoint_models/level_0/multiwalker_v9_20240127-161752_14000000_steps.zip
-    model = PPO.load("multiwalker_v9_20240129-160031.zip")
+    model = PPO.load("chekpoint_models/level_0_2w_to_3w/multiwalker_v9_20240201-105646_7500000_steps.zip")
 
     rewards = {agent: 0 for agent in env.possible_agents}
 
