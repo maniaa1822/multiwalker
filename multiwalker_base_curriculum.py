@@ -289,10 +289,10 @@ class BipedalWalker(Agent):
 class MultiWalkerEnv:
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": FPS}
 
-    hardcore = False
+    hardcore = True
     
     # Set difficulty
-    level = 1 # Easy -> 1 ; Medium -> 2, Hard -> 3 ;
+    level = 4 # Easy -> 1 ; Medium -> 2, Hard -> 3 ;
 
 
     def __init__(
@@ -750,6 +750,9 @@ class MultiWalkerEnv:
             GRASS, STUMP, STAIRS, _STATES_ = range(4)
         elif level == 3:                                    # hard
             GRASS, STUMP, STAIRS, PIT, _STATES_ = range(5)
+        elif level == 4:                                    # very hard
+            GRASS, STAIRS, _STATES_ = range(3)
+        
 
         state = GRASS
         velocity = 0.0
@@ -804,7 +807,7 @@ class MultiWalkerEnv:
                 if counter > 1:
                     y -= 4 * TERRAIN_STEP
 
-            elif state == STUMP and oneshot:
+            elif level in [1,2,3] and state == STUMP and oneshot:
                 counter = self.np_random.integers(1, 3)
                 poly = [
                     (x, y),
